@@ -19,5 +19,12 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.postgresql:postgresql')
 
+	compile('org.projectlombok:lombok')
+
+	// https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf-spring5
+	compile('org.thymeleaf:thymeleaf-spring5')
+	
+	compile('org.springframework.boot:spring-boot-starter-security')
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

@@ -91,13 +91,6 @@ Vue.component('announcements-list', {
             '<announcement-row v-for="announcement in announcements" :key="announcement.id" :announcement="announcement" ' +
         ':editAnnouncement="editAnnouncement" :announcements="announcements"/>' +
         '</div>',
-    created: function () {
-        announcementAPI.get().then(result =>
-            result.json().then(data =>
-                data.forEach(announcement => this.announcements.push(announcement))
-            )
-        )
-    },
     methods: {
         editAnnouncement: function (announcement) {
             this.announcement = announcement;
@@ -107,8 +100,23 @@ Vue.component('announcements-list', {
 
 var app = new Vue({
     el: '#app',
-    template: '<announcements-list :announcements="announcements" />',
+    template:
+        '<div>'+
+            '<div v-if="!profile">You are not authorized.<a href="/login"> Please login </a></div>'+
+            '<div v-else>'+
+                '<div>{{profile.username}} <a href="/login?logout">Logout</a></div>'+
+                '<announcements-list :announcements="announcements" />' +
+            '</div>'+
+        '</div>',
     data: {
-        announcements: []
+        announcements: frontendDate.announcements,
+        profile: frontendDate.profile
+    },
+    created: function () {
+        // announcementAPI.get().then(result =>
+        //     result.json().then(data =>
+        //         data.forEach(announcement => this.announcements.push(announcement))
+        //     )
+        // )
     }
 });

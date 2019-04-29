@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Apartment seller</title>
     <!-- версия для разработки, отображает полезные предупреждения в консоли -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script th:inline="javascript">
+        var frontendDate = [[${frontendDate}]];
+    </script>
 </head>
 <body>
 <div>
     <h3>Apartment seller</h3>
-    <div id="app">{{ message }}</div>
+    <div id="app"></div>
 
 </div>
 <script src="/js/main.js"></script>
