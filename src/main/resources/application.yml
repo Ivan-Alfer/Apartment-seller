@@ -9,3 +9,8 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
+decoded:
+  name: AES
+jwt:
+  key: jwtKey123456789
+  expirationTimeInMS: 864_000_000

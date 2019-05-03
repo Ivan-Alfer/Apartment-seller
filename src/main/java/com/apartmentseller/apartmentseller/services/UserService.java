@@ -3,6 +3,7 @@ package com.apartmentseller.apartmentseller.services;
 import com.apartmentseller.apartmentseller.domain.Role;
 import com.apartmentseller.apartmentseller.domain.User;
 import com.apartmentseller.apartmentseller.repository.UserRepository;
+import lombok.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.util.StringUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -23,7 +25,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username);
     }
 
@@ -50,5 +52,9 @@ public class UserService implements UserDetailsService {
     public User updateUser(User user, User user1){
         // TODO:
         return user;
+    }
+
+    public Optional<User> findById(@NonNull Long userId) {
+        return userRepository.findById(userId);
     }
 }
