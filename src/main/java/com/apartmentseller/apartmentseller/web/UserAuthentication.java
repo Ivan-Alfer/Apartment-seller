@@ -1,6 +1,6 @@
 package com.apartmentseller.apartmentseller.web;
 
-import com.apartmentseller.apartmentseller.domain.User;
+import com.apartmentseller.apartmentseller.dto.UserDto;
 import lombok.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,10 +9,10 @@ import java.util.Collection;
 
 public class UserAuthentication implements Authentication {
 
-    private final User user;
+    private final UserDto user;
     private boolean authentication = true;
 
-    public UserAuthentication(@NonNull User user) {
+    public UserAuthentication(@NonNull UserDto user) {
         this.user = user;
     }
 

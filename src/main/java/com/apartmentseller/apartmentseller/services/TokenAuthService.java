@@ -1,8 +1,9 @@
 package com.apartmentseller.apartmentseller.services;
 
-import com.apartmentseller.apartmentseller.domain.User;
+import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.web.UserAuthentication;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class TokenAuthService {
 
     private final UserService userService;
 
+    @Autowired
     public TokenAuthService(TokenHandler tokenHandler, UserService userService) {
         this.tokenHandler = tokenHandler;
         this.userService = userService;
@@ -33,7 +35,7 @@ public class TokenAuthService {
     }
 
     public void addAuthentication(Authentication authResult, HttpServletResponse response) {
-        User user = (User) authResult.getPrincipal();
+        UserDto user = (UserDto) authResult.getPrincipal();
         response.setHeader(AUTH_HEADER_NAME, tokenHandler.generateToken(user.getId()));
     }
 
