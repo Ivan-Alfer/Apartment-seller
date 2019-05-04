@@ -2,9 +2,10 @@ package com.apartmentseller.apartmentseller.services;
 
 import com.apartmentseller.apartmentseller.domain.Role;
 import com.apartmentseller.apartmentseller.domain.User;
+import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.repository.UserRepository;
 import lombok.NonNull;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -14,47 +15,55 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final MapperService mapperService;
 
-    public UserService(UserRepository userRepository) {
+    @Autowired
+    public UserService(UserRepository userRepository, MapperService mapperService) {
         this.userRepository = userRepository;
+        this.mapperService = mapperService;
     }
 
     @Override
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+    public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
+        return mapperService.mapEntityWithDto(userRepository.findByUsername(username), new UserDto());
     }
 
-    public User addUser(User user){
-        if(StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())){
+    public UserDto addUser(UserDto userDto){
+        if(StringUtils.isEmpty(userDto.getUsername()) || StringUtils.isEmpty(userDto.getPassword())){
             // TODO:
             return null;
         }
-        User userFromDB = userRepository.findByUsername(user.getUsername());
+        User userFromDB = userRepository.findByUsername(userDto.getUsername());
         if (Objects.nonNull(userFromDB)){
             // TODO:
             return null;
         }
-
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
-        return userRepository.save(user);
+        User userEntity = mapperService.mapEntityWithDto(userDto, new User());
+        userEntity.setActive(true);
+        userEntity.setRoles(Collections.singleton(Role.USER));
+        userRepository.save(userEntity);
+        return userDto;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(userEntity -> mapperService.mapEntityWithDto(userEntity, new UserDto()))
+                .collect(Collectors.toList());
     }
 
-    public User updateUser(User user, User user1){
+    public UserDto updateUser(UserDto user, UserDto user1){
         // TODO:
         return user;
     }
 
-    public Optional<User> findById(@NonNull Long userId) {
-        return userRepository.findById(userId);
+    public Optional<UserDto> findById(@NonNull Long userId) {
+        return Optional.ofNullable(mapperService
+                .mapEntityWithDto(userRepository.findById(userId).orElse(null), new UserDto()));
     }
 }

@@ -1,7 +1,8 @@
 package com.apartmentseller.apartmentseller.controller;
 
-import com.apartmentseller.apartmentseller.domain.User;
+import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,27 +22,29 @@ public class UserController {
 
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
-    public List<User> userList(@AuthenticationPrincipal User user){
+    public List<UserDto> userList(@AuthenticationPrincipal UserDto user){
         return userService.getAllUsers();
     }
 
     @PutMapping("{id}")
-    public User updateUser(@PathVariable("id") User userFromDB, @RequestBody User user){
+    public UserDto updateUser(@PathVariable("id") UserDto userFromDB, @RequestBody UserDto user){
         return userService.updateUser(userFromDB, user);
     }
 
     @GetMapping("{id}")
-    public User getAnnouncement(@PathVariable("id") User user) {
+    public UserDto getAnnouncement(@PathVariable("id") UserDto user) {
+        //TODO
         return user;
     }
 
     @PostMapping
-    public User addUser(@RequestBody User user) {
+    public UserDto addUser(@RequestBody UserDto user) {
         return userService.addUser(user);
     }
 
