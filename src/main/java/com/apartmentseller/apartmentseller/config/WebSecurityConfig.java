@@ -3,7 +3,7 @@ package com.apartmentseller.apartmentseller.config;
 import com.apartmentseller.apartmentseller.filters.JwtLoginFilter;
 import com.apartmentseller.apartmentseller.filters.StatelessAuthFilter;
 import com.apartmentseller.apartmentseller.services.TokenAuthService;
-import com.apartmentseller.apartmentseller.services.UserService;
+import com.apartmentseller.apartmentseller.services.security.SecurityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,12 +21,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService userService;
+    private final SecurityUserService userService;
 
     private final TokenAuthService tokenAuthService;
 
     @Autowired
-    public WebSecurityConfig(UserService userService, TokenAuthService tokenAuthService){
+    public WebSecurityConfig(SecurityUserService userService, TokenAuthService tokenAuthService){
         this.userService = userService;
         this.tokenAuthService = tokenAuthService;
     }
