@@ -18,22 +18,19 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
 
-    private final MapperService mapperService;
-
     @Autowired
-    public AnnouncementServiceImpl(AnnouncementRepository announcementRepository, MapperService mapperService) {
+    public AnnouncementServiceImpl(AnnouncementRepository announcementRepository) {
         this.announcementRepository = announcementRepository;
-        this.mapperService = mapperService;
     }
 
     public List<AnnouncementDto> getAllAnnouncement() {
         return announcementRepository.findAll().stream()
-                .map(announcementEntity -> mapperService.mapEntityWithDto(announcementEntity, new AnnouncementDto()))
+                .map(MapperService.INSTANCE::announcementEntityMapToAnnouncementDto)
                 .collect(Collectors.toList());
     }
 
     public AnnouncementDto addAnnouncement(AnnouncementDto announcementDto) {
-        Announcement announcement = mapperService.mapEntityWithDto(announcementDto, new Announcement());
+        Announcement announcement = MapperService.INSTANCE.announcementDtoMapToAnnouncementEntity(announcementDto);
         announcement.setCreationTime(LocalDateTime.now());
         announcementRepository.save(announcement);
         return announcementDto;
@@ -41,13 +38,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     public AnnouncementDto updateAnnouncement(AnnouncementDto announcementFromDB, AnnouncementDto announcement) {
         BeanUtils.copyProperties(announcement, announcementFromDB, "id");
-        Announcement announcementEntity = mapperService.mapEntityWithDto(announcementFromDB,new Announcement());
+        Announcement announcementEntity = MapperService.INSTANCE.announcementDtoMapToAnnouncementEntity(announcementFromDB);
         announcementRepository.save(announcementEntity);
         return announcementFromDB;
     }
 
     public void deleteAnnouncement(AnnouncementDto announcementDto) {
-        Announcement announcement = mapperService.mapEntityWithDto(announcementDto, new Announcement());
-        announcementRepository.delete(announcement);
+        Announcement announcementEntity = MapperService.INSTANCE.announcementDtoMapToAnnouncementEntity(announcementDto);
+        announcementRepository.delete(announcementEntity);
     }
 }
