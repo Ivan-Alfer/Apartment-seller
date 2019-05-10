@@ -1,10 +1,9 @@
 package com.apartmentseller.apartmentseller.services.impl;
 
-import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.services.TokenAuthService;
 import com.apartmentseller.apartmentseller.services.TokenHandler;
 import com.apartmentseller.apartmentseller.services.UserService;
-import com.apartmentseller.apartmentseller.web.UserAuthentication;
+import com.apartmentseller.apartmentseller.services.security.UserAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -32,8 +31,8 @@ public class TokenAuthServiceImpl implements TokenAuthService {
     }
 
     public String addAuthentication(Authentication authResult) {
-        UserDto user = (UserDto) authResult.getPrincipal();
-        return tokenHandler.generateToken(user.getId());
+        UserAuthentication userAuthentication = (UserAuthentication) authResult.getPrincipal();
+        return tokenHandler.generateToken(userAuthentication.getUser().getId());
     }
 
 }
