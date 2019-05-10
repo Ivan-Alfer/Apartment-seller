@@ -5,19 +5,14 @@ import com.apartmentseller.apartmentseller.services.TokenAuthService;
 import com.apartmentseller.apartmentseller.services.TokenHandler;
 import com.apartmentseller.apartmentseller.services.UserService;
 import com.apartmentseller.apartmentseller.web.UserAuthentication;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Service
 public class TokenAuthServiceImpl implements TokenAuthService {
-
-    private static final String AUTH_HEADER_NAME = "X-Auth-Token";
 
     private final TokenHandler tokenHandler;
 
@@ -29,17 +24,16 @@ public class TokenAuthServiceImpl implements TokenAuthService {
         this.userService = userService;
     }
 
-    public Optional<Authentication> getAuthentication(@NonNull HttpServletRequest request) {
-
-        return Optional.ofNullable(request.getHeader(AUTH_HEADER_NAME))
+    public Optional<Authentication> getAuthentication(String authToken) {
+        return Optional.ofNullable(authToken)
                 .flatMap(tokenHandler::extractUserId)
                 .flatMap(userService::findById)
                 .map(UserAuthentication::new);
     }
 
-    public void addAuthentication(Authentication authResult, HttpServletResponse response) {
+    public String addAuthentication(Authentication authResult) {
         UserDto user = (UserDto) authResult.getPrincipal();
-        response.setHeader(AUTH_HEADER_NAME, tokenHandler.generateToken(user.getId()));
+        return tokenHandler.generateToken(user.getId());
     }
 
 }
