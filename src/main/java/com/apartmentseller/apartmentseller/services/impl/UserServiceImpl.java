@@ -8,8 +8,6 @@ import com.apartmentseller.apartmentseller.services.MapperService;
 import com.apartmentseller.apartmentseller.services.UserService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -23,12 +21,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final MapperService mapperService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, MapperService mapperService) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.mapperService = mapperService;
     }
 
     public UserDto addUser(UserDto userDto){
@@ -41,7 +37,7 @@ public class UserServiceImpl implements UserService {
             // TODO:
             return null;
         }
-        User userEntity = mapperService.mapEntityWithDto(userDto, new User());
+        User userEntity = MapperService.INSTANCE.userDtoMapToUserEntity(userDto);
         userEntity.setActive(true);
         userEntity.setRoles(Collections.singleton(Role.USER));
         userRepository.save(userEntity);
@@ -50,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     public List<UserDto> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(userEntity -> mapperService.mapEntityWithDto(userEntity, new UserDto()))
+                .map(MapperService.INSTANCE::userEntityMapToUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +56,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public Optional<UserDto> findById(@NonNull Long userId) {
-        return Optional.ofNullable(mapperService
-                .mapEntityWithDto(userRepository.findById(userId).orElse(null), new UserDto()));
+        return Optional.ofNullable(
+                MapperService.INSTANCE.userEntityMapToUserDto(userRepository.findById(userId)
+                        .orElse(null)));
     }
 }

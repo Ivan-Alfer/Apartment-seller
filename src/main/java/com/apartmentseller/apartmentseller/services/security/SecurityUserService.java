@@ -13,17 +13,15 @@ import org.springframework.stereotype.Service;
 public class SecurityUserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final MapperService mapperService;
 
     @Autowired
-    public SecurityUserService(UserRepository userRepository, MapperService mapperService) {
+    public SecurityUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.mapperService = mapperService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return mapperService.mapEntityWithDto(userRepository.findByUsername(username), new UserDto());
-
+        return MapperService.INSTANCE.userEntityMapToUserDto(userRepository.findByUsername(username));
+        /*mapperService.mapEntityWithDto(userRepository.findByUsername(username), new UserDto());*/
     }
 }
