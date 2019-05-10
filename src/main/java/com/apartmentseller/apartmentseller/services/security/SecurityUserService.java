@@ -1,5 +1,6 @@
 package com.apartmentseller.apartmentseller.services.security;
 
+import com.apartmentseller.apartmentseller.domain.User;
 import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.repository.UserRepository;
 import com.apartmentseller.apartmentseller.services.MapperService;
@@ -21,7 +22,9 @@ public class SecurityUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return MapperService.INSTANCE.userEntityMapToUserDto(userRepository.findByUsername(username));
+        User userEntity = userRepository.findByUsername(username);
+        UserDto userDto = MapperService.INSTANCE.userEntityMapToUserDto(userEntity);
+        return new UserAuthentication(userDto);
         /*mapperService.mapEntityWithDto(userRepository.findByUsername(username), new UserDto());*/
     }
 }
