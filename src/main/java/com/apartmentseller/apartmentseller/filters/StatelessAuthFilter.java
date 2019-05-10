@@ -11,20 +11,32 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Objects;
 
 public class StatelessAuthFilter extends GenericFilterBean {
 
     private final TokenAuthService tokenAuthService;
 
-    public StatelessAuthFilter(@NonNull TokenAuthService tokenAuthService){
+    private final String authHeaderName;
+
+    public StatelessAuthFilter(@NonNull TokenAuthService tokenAuthService, String authHeaderName) {
         this.tokenAuthService = tokenAuthService;
+        this.authHeaderName = authHeaderName;
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        SecurityContextHolder.getContext().setAuthentication(
-                tokenAuthService.getAuthentication((HttpServletRequest) request).orElse(null)
-        );
+        if (Objects.isNull(request)) {
+            return;
+        }
+        setSecurityAuthentication((HttpServletRequest) request);
         chain.doFilter(request, response);
+    }
+
+    private void setSecurityAuthentication(HttpServletRequest request) {
+        String header = request.getHeader(authHeaderName);
+        SecurityContextHolder.getContext().setAuthentication(
+                tokenAuthService.getAuthentication(header).orElse(null)
+        );
     }
 }

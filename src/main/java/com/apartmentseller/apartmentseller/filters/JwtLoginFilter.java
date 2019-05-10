@@ -10,11 +10,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -22,15 +22,20 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
 
-    public JwtLoginFilter(AuthenticationManager authenticationManager, TokenAuthService tokenAuthService) {
+    private final String authHeaderName;
+
+    public JwtLoginFilter(AuthenticationManager authenticationManager, TokenAuthService tokenAuthService, String authHeaderName) {
         this.authenticationManager = authenticationManager;
         this.tokenAuthService = tokenAuthService;
+        this.authHeaderName = authHeaderName;
     }
 
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
+        if (Objects.isNull(request)) {
+            return null;
+        }
         User user = getUserFromRequest(request);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), Collections.emptyList());
 
@@ -48,8 +53,9 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        tokenAuthService.addAuthentication(authResult, response);
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+        String token = tokenAuthService.addAuthentication(authResult);
+        response.setHeader(authHeaderName, token);
     }
 
 

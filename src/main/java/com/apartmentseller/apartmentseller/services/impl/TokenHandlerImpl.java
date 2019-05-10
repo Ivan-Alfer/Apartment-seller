@@ -1,5 +1,6 @@
 package com.apartmentseller.apartmentseller.services.impl;
 
+import com.apartmentseller.apartmentseller.property.TokenHandlerProperty;
 import com.apartmentseller.apartmentseller.services.TokenHandler;
 import com.google.common.io.BaseEncoding;
 import io.jsonwebtoken.Claims;
@@ -7,7 +8,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -22,11 +22,11 @@ public class TokenHandlerImpl implements TokenHandler {
 
     private final long expirationTime;
 
-    public TokenHandlerImpl(@Value("${jwt.key}") String jwtKey, @Value("${decoded.name}") String decoderName, @Value("${jwt.expirationTimeInMS}") long expirationTime) {
-        byte[] decodedKey = BaseEncoding.base64().decode(jwtKey);
-        secretKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, decoderName);
+    public TokenHandlerImpl(TokenHandlerProperty tokenHandlerProperty) {
+        byte[] decodedKey = BaseEncoding.base64().decode(tokenHandlerProperty.getJwtKey());
+        secretKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, tokenHandlerProperty.getDecoderName());
 
-        this.expirationTime = expirationTime;
+        this.expirationTime = tokenHandlerProperty.getExpirationTime();
     }
 
     public Optional<Long> extractUserId(@NonNull String token) {

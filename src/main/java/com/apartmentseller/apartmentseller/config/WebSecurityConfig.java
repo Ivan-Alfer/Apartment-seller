@@ -5,6 +5,7 @@ import com.apartmentseller.apartmentseller.filters.StatelessAuthFilter;
 import com.apartmentseller.apartmentseller.services.TokenAuthService;
 import com.apartmentseller.apartmentseller.services.security.SecurityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +25,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SecurityUserService userService;
 
     private final TokenAuthService tokenAuthService;
+
+    @Value("${auth.header.name}")
+    private String authHeaderName;
 
     @Autowired
     public WebSecurityConfig(SecurityUserService userService, TokenAuthService tokenAuthService){
@@ -46,8 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/").permitAll()
                 .and()
                     .csrf().disable()
-                .addFilterBefore(new JwtLoginFilter(authenticationManager(), tokenAuthService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new StatelessAuthFilter(tokenAuthService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtLoginFilter(authenticationManager(), tokenAuthService, authHeaderName), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new StatelessAuthFilter(tokenAuthService, authHeaderName), UsernamePasswordAuthenticationFilter.class);
 
     }
 
