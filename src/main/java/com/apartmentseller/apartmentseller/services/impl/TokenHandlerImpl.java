@@ -1,6 +1,6 @@
 package com.apartmentseller.apartmentseller.services.impl;
 
-import com.apartmentseller.apartmentseller.property.TokenHandlerProperty;
+import com.apartmentseller.apartmentseller.config.property.TokenHandlerProperty;
 import com.apartmentseller.apartmentseller.services.TokenHandler;
 import com.google.common.io.BaseEncoding;
 import io.jsonwebtoken.Claims;

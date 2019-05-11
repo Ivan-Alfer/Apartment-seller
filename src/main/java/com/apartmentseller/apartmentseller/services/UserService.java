@@ -10,7 +10,7 @@ public interface UserService {
 
     UserDto addUser(UserDto userDto);
     List<UserDto> getAllUsers();
-    UserDto updateUser(UserDto user, UserDto user1);
+    UserDto updateUser(long userId, UserDto currentUser, UserDto user1) throws Exception;
     Optional<UserDto> findById(@NonNull Long userId);
-
+    UserDto activateUser(String code) throws Exception;
 }

@@ -15,6 +15,10 @@ public class UserDto {
 
     private String password;
 
+    private String email;
+
+    private String activationCode;
+
     private boolean active;
 
     private Set<Role> roles;
