@@ -21,6 +21,8 @@ public class UserDto {
 
     private boolean active;
 
+    private boolean enable;
+
     private Set<Role> roles;
 
     private LocalDateTime lastVisit;

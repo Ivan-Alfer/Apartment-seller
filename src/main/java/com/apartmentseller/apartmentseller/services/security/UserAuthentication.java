@@ -44,7 +44,7 @@ public class UserAuthentication implements Authentication, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isEnable();
     }
 
     @Override

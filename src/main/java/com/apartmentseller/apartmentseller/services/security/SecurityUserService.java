@@ -25,6 +25,5 @@ public class SecurityUserService implements UserDetailsService {
         User userEntity = userRepository.findByUsername(username);
         UserDto userDto = MapperService.INSTANCE.userEntityMapToUserDto(userEntity);
         return new UserAuthentication(userDto);
-        /*mapperService.mapEntityWithDto(userRepository.findByUsername(username), new UserDto());*/
     }
 }
