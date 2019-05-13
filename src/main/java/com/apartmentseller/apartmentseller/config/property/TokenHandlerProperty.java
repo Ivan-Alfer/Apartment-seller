@@ -1,4 +1,4 @@
-package com.apartmentseller.apartmentseller.property;
+package com.apartmentseller.apartmentseller.config.property;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

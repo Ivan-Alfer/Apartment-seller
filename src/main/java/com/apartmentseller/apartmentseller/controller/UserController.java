@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-@PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
     private final UserService userService;
@@ -27,25 +25,32 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public List<UserDto> userList(@AuthenticationPrincipal UserDto user){
+    public List<UserDto> userList(){
         return userService.getAllUsers();
     }
 
     @PutMapping("{id}")
-    public UserDto updateUser(@PathVariable("id") UserDto userFromDB, @RequestBody UserDto user){
-        return userService.updateUser(userFromDB, user);
+    public UserDto updateUser(@PathVariable("id") long userId,
+                              @AuthenticationPrincipal UserDto currentUser,
+                              @RequestBody UserDto userChanges){
+        try {
+            return userService.updateUser(userId,currentUser, userChanges);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return null;
+        }
+
     }
+
+//    @PostMapping("/sign-up")
+//    public UserDto signUp(@RequestBody UserDto user) {
+//        return userService.addUser(user);
+//    }
 
     @GetMapping("{id}")
-    public UserDto getAnnouncement(@PathVariable("id") UserDto user) {
-        //TODO
-        return user;
+    public UserDto getUser(@PathVariable("id") long userId) {
+        return userService.findById(userId).orElse(null);
     }
-
-    @PostMapping
-    public UserDto addUser(@RequestBody UserDto user) {
-        return userService.addUser(user);
-    }
-
 }

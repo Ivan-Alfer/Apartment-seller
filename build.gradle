@@ -23,6 +23,11 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	runtime('org.springframework.boot:spring-boot-devtools')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-security')
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
+	compile ('org.springframework.boot:spring-boot-starter-mail')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+
 	compile('org.postgresql:postgresql')
 
 	compile('org.projectlombok:lombok')
@@ -30,10 +35,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf-spring5
 	compile('org.thymeleaf:thymeleaf-spring5')
 	
-	compile('org.springframework.boot:spring-boot-starter-security')
-
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
 	compile("io.jsonwebtoken:jjwt:${jjwtVersion}")
 
@@ -41,7 +42,6 @@ dependencies {
     compile("com.google.guava:guava:${guavaVersion}")
 
     compile("org.mapstruct:mapstruct:${mapstructVersion}")
-
 	compile("org.mapstruct:mapstruct-processor:${mapstructVersion}")
 
 }

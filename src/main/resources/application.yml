@@ -9,6 +9,20 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
+  mail:
+    host: smtp.gmail.com
+    username: ivan.alfer@innowise-group.com
+    password:
+    port: 587
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+          ssl.trust: smtp.gmail.com
+mail:
+  debug: true
 decoded:
   name: AES
 jwt:
@@ -17,3 +31,5 @@ jwt:
 auth:
   header:
     name: X-Auth-Token
+url:
+  activate: http://localhost:8080/activate/
