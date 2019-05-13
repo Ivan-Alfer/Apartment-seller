@@ -99,6 +99,7 @@ public class UserServiceImpl implements UserService {
                 .map(user -> {
                     user.setActive(true);
                     user.setActivationCode(null);
+                    user.setEnable(true);
                     userRepository.save(user);
                     return MapperService.INSTANCE.userEntityMapToUserDto(user);
                     })
