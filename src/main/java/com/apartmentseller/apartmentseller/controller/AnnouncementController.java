@@ -1,9 +1,10 @@
 package com.apartmentseller.apartmentseller.controller;
 
-import com.apartmentseller.apartmentseller.domain.Announcement;
 import com.apartmentseller.apartmentseller.dto.AnnouncementDto;
+import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.services.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,23 +33,31 @@ public class AnnouncementController {
     }
 
     @GetMapping("{id}")
-    public Announcement getAnnouncement(@PathVariable("id") Announcement announcement) {
-        return announcement;
+    public AnnouncementDto getAnnouncement(@PathVariable("id") long announcementId) {
+        return announcementService.getAnnouncement(announcementId).orElse(null);
     }
 
     @PostMapping
-    public AnnouncementDto addAnnouncement(@RequestBody AnnouncementDto announcement) {
+    public AnnouncementDto addAnnouncement(@RequestBody AnnouncementDto announcement, @AuthenticationPrincipal UserDto userDto) {
+        announcement.setAuthor(userDto);
         return announcementService.addAnnouncement(announcement);
     }
 
     @PutMapping("{id}")
-    public AnnouncementDto updateAnnouncement(@PathVariable("id") AnnouncementDto announcementFromDB, @RequestBody AnnouncementDto announcement) {
-        return announcementService.updateAnnouncement(announcementFromDB, announcement);
+    public AnnouncementDto updateAnnouncement(@PathVariable("id") long announcementId,
+                                              @RequestBody AnnouncementDto announcement,
+                                              @AuthenticationPrincipal UserDto userDto) {
+        try {
+            return announcementService.updateAnnouncement(announcementId, announcement, userDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @DeleteMapping("{id}")
-    public void deleteAnnouncement(@PathVariable("id") AnnouncementDto announcement){
-        announcementService.deleteAnnouncement(announcement);
+    public void deleteAnnouncement(@PathVariable("id") long announcementId, @AuthenticationPrincipal UserDto currentUser){
+        announcementService.deleteAnnouncement(announcementId, currentUser);
     }
 
 }

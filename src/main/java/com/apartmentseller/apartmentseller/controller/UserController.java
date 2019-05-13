@@ -41,13 +41,7 @@ public class UserController {
             exception.printStackTrace();
             return null;
         }
-
     }
-
-//    @PostMapping("/sign-up")
-//    public UserDto signUp(@RequestBody UserDto user) {
-//        return userService.addUser(user);
-//    }
 
     @GetMapping("{id}")
     public UserDto getUser(@PathVariable("id") long userId) {

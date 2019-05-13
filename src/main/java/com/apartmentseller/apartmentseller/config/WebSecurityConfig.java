@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,7 +41,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                    .antMatchers("/", "/announcement/**", "/js/**", "/login", "/sign-up", "/activate/*").permitAll()
+                .antMatchers(HttpMethod.POST, "/announcement").authenticated()
+                .antMatchers(HttpMethod.PUT, "/announcement/*").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/announcement/*").authenticated()
+                .antMatchers("/", "/announcement/**", "/js/**", "/login", "/sign-up", "/activate/*").permitAll()
                     .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
