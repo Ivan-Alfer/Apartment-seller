@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDto updateUser(long userId, UserDto currentUser, UserDto userDto) throws Exception {
-        if (hasPermissionToUpdateUser(userId, currentUser)) {
+        if (ServiceUtils.hasUserPermissionToUpdate(userId, currentUser)) {
             return userRepository.findById(userId)
                     .map(userEntity -> {
                         BeanUtils.copyProperties(userDto, userEntity, "id", "active", "lastVisit", "password");
@@ -80,13 +80,6 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(Exception::new);
         }
         return null;
-    }
-
-    private boolean hasPermissionToUpdateUser(long userId, UserDto currentUser) {
-        return currentUser.getId() == userId ||
-                currentUser.getRoles()
-                        .stream()
-                        .anyMatch(Role.ADMIN::equals);
     }
 
     public Optional<UserDto> findById(@NonNull Long userId) {
