@@ -33,3 +33,5 @@ auth:
     name: X-Auth-Token
 url:
   activate: http://localhost:8080/activate/
+upload:
+    path: /d:/development/apartment-seller/src/main/resources/uploads

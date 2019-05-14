@@ -8,15 +8,25 @@ import com.apartmentseller.apartmentseller.services.AnnouncementService;
 import com.apartmentseller.apartmentseller.services.MapperService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class AnnouncementServiceImpl implements AnnouncementService {
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     private final AnnouncementRepository announcementRepository;
 
@@ -31,11 +41,32 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                 .collect(Collectors.toList());
     }
 
-    public AnnouncementDto addAnnouncement(AnnouncementDto announcementDto) {
+    public AnnouncementDto addAnnouncement(AnnouncementDto announcementDto, MultipartFile file) {
+        if(Objects.nonNull(file) && !StringUtils.isEmpty(file.getOriginalFilename())){
+            addImageToAnnouncement(announcementDto, file);
+        }
+
         Announcement announcement = MapperService.INSTANCE.announcementDtoMapToAnnouncementEntity(announcementDto);
         announcement.setCreationTime(LocalDateTime.now());
         announcementRepository.save(announcement);
         return announcementDto;
+    }
+
+    private void addImageToAnnouncement(AnnouncementDto announcementDto, MultipartFile file) {
+        File uploadDir = new File(uploadPath);
+        if(!uploadDir.exists()){
+            uploadDir.mkdir();
+        }
+        String uuidFile = UUID.randomUUID().toString();
+        String resultFileName = uuidFile + "." + file.getOriginalFilename();
+
+        try {
+            file.transferTo(new File(uploadPath + "/" + resultFileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        announcementDto.setFilename(resultFileName);
     }
 
     public AnnouncementDto updateAnnouncement(long announcementId, AnnouncementDto announcement, UserDto currentUser) throws Exception {
@@ -59,9 +90,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                     announcementRepository.delete(announcementEntity);
                     return Optional.empty();
                 });
-
-//        Announcement announcementEntity = MapperService.INSTANCE.announcementDtoMapToAnnouncementEntity(announcementDto);
-//        announcementRepository.delete(announcementEntity);
     }
 
     @Override

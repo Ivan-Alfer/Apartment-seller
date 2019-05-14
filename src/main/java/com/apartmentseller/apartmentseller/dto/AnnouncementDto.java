@@ -11,5 +11,6 @@ public class AnnouncementDto {
     private String text;
     private UserDto author;
     private LocalDateTime creationTime;
+    private String filename;
 
 }
