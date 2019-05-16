@@ -23,10 +23,10 @@ public class TokenHandlerImpl implements TokenHandler {
     private final long expirationTime;
 
     public TokenHandlerImpl(TokenHandlerProperty tokenHandlerProperty) {
-        byte[] decodedKey = BaseEncoding.base64().decode(tokenHandlerProperty.getJwtKey());
+        byte[] decodedKey = BaseEncoding.base64().decode(tokenHandlerProperty.getKey());
         secretKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, tokenHandlerProperty.getDecoderName());
 
-        this.expirationTime = tokenHandlerProperty.getExpirationTime();
+        this.expirationTime = tokenHandlerProperty.getExpirationTimeInMS();
     }
 
     public Optional<Long> extractUserId(@NonNull String token) {
