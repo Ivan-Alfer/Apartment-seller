@@ -2,15 +2,13 @@ package com.apartmentseller.apartmentseller.config.property;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@Component
+@ConfigurationProperties(prefix = "jwt")
 public class TokenHandlerProperty {
-    @Value("${jwt.key}")
-    private String jwtKey;
+    private String key;
+    private long expirationTimeInMS;
     @Value("${decoded.name}")
     private String decoderName;
-    @Value("${jwt.expirationTimeInMS}")
-    private long expirationTime;
 }
