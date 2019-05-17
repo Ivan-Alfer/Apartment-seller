@@ -6,6 +6,8 @@ import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.repository.AnnouncementRepository;
 import com.apartmentseller.apartmentseller.services.AnnouncementService;
 import com.apartmentseller.apartmentseller.services.MapperService;
+import com.apartmentseller.apartmentseller.services.exceptions.AnnouncementNotFoundException;
+import com.apartmentseller.apartmentseller.services.exceptions.UserDoesNotHavePermission;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,16 +71,16 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         announcementDto.setFilename(resultFileName);
     }
 
-    public AnnouncementDto updateAnnouncement(long announcementId, AnnouncementDto announcement, UserDto currentUser) throws Exception {
+    public AnnouncementDto updateAnnouncement(long announcementId, AnnouncementDto announcement, UserDto currentUser) {
         return announcementRepository.findById(announcementId)
                 .map(announcementEntity -> {
                     if(!ServiceUtils.hasUserPermissionToUpdate(announcementEntity.getAuthor().getId(), currentUser)){
-                        return null;
+                        throw new UserDoesNotHavePermission("You don't have permission");
                     }
                     BeanUtils.copyProperties(announcement, announcementEntity, "id", "author", "creationTime");
                     announcementRepository.save(announcementEntity);
                     return announcement;
-                }).orElseThrow(Exception::new);
+                }).orElseThrow(AnnouncementNotFoundException::new);
     }
 
     public void deleteAnnouncement(long announcementId, UserDto currentUser) {
@@ -89,11 +91,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                     }
                     announcementRepository.delete(announcementEntity);
                     return Optional.empty();
-                });
+                })
+                .orElseThrow(AnnouncementNotFoundException::new);
     }
 
     @Override
     public Optional<AnnouncementDto> getAnnouncement(long announcementId) {
-        return announcementRepository.findById(announcementId).map(MapperService.INSTANCE::announcementEntityMapToAnnouncementDto);
+        return announcementRepository.findById(announcementId)
+                .map(MapperService.INSTANCE::announcementEntityMapToAnnouncementDto);
     }
 }

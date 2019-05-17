@@ -7,16 +7,16 @@ import com.apartmentseller.apartmentseller.repository.UserRepository;
 import com.apartmentseller.apartmentseller.services.MailSender;
 import com.apartmentseller.apartmentseller.services.MapperService;
 import com.apartmentseller.apartmentseller.services.UserService;
+import com.apartmentseller.apartmentseller.services.exceptions.UserNotFoundException;
 import lombok.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,23 +37,29 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDto addUser(UserDto userDto) {
-        if (StringUtils.isEmpty(userDto.getUsername()) ||
-                StringUtils.isEmpty(userDto.getPassword()) ||
-                StringUtils.isEmpty(userDto.getEmail())) {
-            // TODO:
-            return null;
-        }
+        checkForEmptyFields(userDto);
+
         User userFromDB = userRepository.findByUsername(userDto.getUsername());
-        if (Objects.nonNull(userFromDB)) {
-            // TODO:
-            return null;
-        }
+        Optional.ofNullable(userFromDB)
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("User with username " + userDto.getUsername() + "exist");
+                });
+
         userDto.setRoles(Collections.singleton(Role.USER));
         userDto.setActivationCode(UUID.randomUUID().toString());
         User userEntity = MapperService.INSTANCE.userDtoMapToUserEntity(userDto);
         sendMailToUserEmail(userDto);
         userRepository.save(userEntity);
         return userDto;
+    }
+
+    private void checkForEmptyFields(UserDto userDto) {
+        Optional.ofNullable(userDto.getUsername())
+                .orElseThrow(() -> new InvalidParameterException("Field username required"));
+        Optional.ofNullable(userDto.getPassword())
+                .orElseThrow(() -> new InvalidParameterException("Field password required"));
+        Optional.ofNullable(userDto.getEmail())
+                .orElseThrow(() -> new InvalidParameterException("Field email required"));
     }
 
     private void sendMailToUserEmail(UserDto userDto) {
@@ -69,7 +75,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDto updateUser(long userId, UserDto currentUser, UserDto userDto) throws Exception {
+    public UserDto updateUser(long userId, UserDto currentUser, UserDto userDto) {
         if (ServiceUtils.hasUserPermissionToUpdate(userId, currentUser)) {
             return userRepository.findById(userId)
                     .map(userEntity -> {
@@ -77,17 +83,18 @@ public class UserServiceImpl implements UserService {
                         userRepository.save(userEntity);
                         return userDto;
                     })
-                    .orElseThrow(Exception::new);
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
         }
         return null;
     }
 
     public Optional<UserDto> findById(@NonNull Long userId) {
-        return userRepository.findById(userId).map(MapperService.INSTANCE::userEntityMapToUserDto);
+        return userRepository.findById(userId)
+                .map(MapperService.INSTANCE::userEntityMapToUserDto);
     }
 
     @Override
-    public UserDto activateUser(String code) throws Exception {
+    public UserDto activateUser(String code) {
         return Optional.ofNullable(userRepository.findByActivationCode(code))
                 .map(user -> {
                     user.setActive(true);
@@ -96,6 +103,6 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user);
                     return MapperService.INSTANCE.userEntityMapToUserDto(user);
                     })
-                .orElseThrow(Exception::new);
+                .orElseThrow(() -> new InvalidParameterException("Activation code not found"));
     }
 }

@@ -26,11 +26,6 @@ public class RegistrationController {
 
     @GetMapping("/activate/{code}")
     public UserDto activateAccount(@PathVariable String code){
-        try {
             return userService.activateUser(code);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

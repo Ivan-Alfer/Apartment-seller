@@ -2,6 +2,8 @@ package com.apartmentseller.apartmentseller.controller;
 
 import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.services.UserService;
+import com.apartmentseller.apartmentseller.services.exceptions.UserDoesNotHavePermission;
+import com.apartmentseller.apartmentseller.services.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -34,17 +37,14 @@ public class UserController {
     @PutMapping("{id}")
     public UserDto updateUser(@PathVariable("id") long userId,
                               @AuthenticationPrincipal UserDto currentUser,
-                              @RequestBody UserDto userChanges){
-        try {
-            return userService.updateUser(userId,currentUser, userChanges);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return null;
-        }
+                              @RequestBody UserDto userChanges) {
+            return Optional.ofNullable(userService.updateUser(userId,currentUser, userChanges))
+                    .orElseThrow(()-> new UserDoesNotHavePermission("You don't have permission"));
     }
 
     @GetMapping("{id}")
     public UserDto getUser(@PathVariable("id") long userId) {
-        return userService.findById(userId).orElse(null);
+        return userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User - " + userId + " not found"));
     }
 }
