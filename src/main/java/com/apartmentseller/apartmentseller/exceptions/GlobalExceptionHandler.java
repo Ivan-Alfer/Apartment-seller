@@ -32,11 +32,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(AnnouncementNotFoundException.class)
-    private ResponseEntity<GlobalException> handleAnnouncementNotFoundException(AnnouncementNotFoundException e){
-        return new ResponseEntity<>(new GlobalException(e.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(AnnouncementNotFoundException.class)
     private ResponseEntity<GlobalException> handleAnnouncementNotFoundException(){
         return new ResponseEntity<>(new GlobalException("Announcement not found"), HttpStatus.NOT_FOUND);
     }
