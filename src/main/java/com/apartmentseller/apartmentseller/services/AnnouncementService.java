@@ -13,5 +13,5 @@ public interface AnnouncementService {
     AnnouncementDto addAnnouncement(AnnouncementDto announcementDto, MultipartFile file);
     void deleteAnnouncement(long announcementId, UserDto currentUser);
     Optional<AnnouncementDto> getAnnouncement(long announcementId);
-    AnnouncementDto updateAnnouncement(long announcementId, AnnouncementDto announcement, UserDto userDto) throws Exception;
+    AnnouncementDto updateAnnouncement(long announcementId, AnnouncementDto announcement, UserDto userDto);
 }

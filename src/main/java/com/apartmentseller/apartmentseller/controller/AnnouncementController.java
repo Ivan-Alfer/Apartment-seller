@@ -3,6 +3,7 @@ package com.apartmentseller.apartmentseller.controller;
 import com.apartmentseller.apartmentseller.dto.AnnouncementDto;
 import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.services.AnnouncementService;
+import com.apartmentseller.apartmentseller.services.exceptions.AnnouncementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +37,8 @@ public class AnnouncementController {
 
     @GetMapping("{id}")
     public AnnouncementDto getAnnouncement(@PathVariable("id") long announcementId) {
-        return announcementService.getAnnouncement(announcementId).orElse(null);
+        return announcementService.getAnnouncement(announcementId)
+                .orElseThrow(()-> new AnnouncementNotFoundException("Announcement not found"));
     }
 
     @PostMapping
@@ -52,12 +54,7 @@ public class AnnouncementController {
     public AnnouncementDto updateAnnouncement(@PathVariable("id") long announcementId,
                                               @RequestBody AnnouncementDto announcement,
                                               @AuthenticationPrincipal UserDto userDto) {
-        try {
             return announcementService.updateAnnouncement(announcementId, announcement, userDto);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @DeleteMapping("{id}")
