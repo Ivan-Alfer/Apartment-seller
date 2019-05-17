@@ -38,7 +38,7 @@ public class AnnouncementController {
     @GetMapping("{id}")
     public AnnouncementDto getAnnouncement(@PathVariable("id") long announcementId) {
         return announcementService.getAnnouncement(announcementId)
-                .orElseThrow(()-> new AnnouncementNotFoundException("Announcement not found"));
+                .orElseThrow(AnnouncementNotFoundException::new);
     }
 
     @PostMapping
