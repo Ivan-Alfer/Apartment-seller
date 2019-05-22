@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface TokenHandler {
 
-    Optional<Long> extractUserId(@NonNull String token);
-    String generateToken(@NonNull Long id);
+    Optional<String> extractUser(@NonNull String token);
+    String generateToken(@NonNull String username);
 }

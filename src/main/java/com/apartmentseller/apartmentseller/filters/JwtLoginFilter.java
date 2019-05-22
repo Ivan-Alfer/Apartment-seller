@@ -1,6 +1,6 @@
 package com.apartmentseller.apartmentseller.filters;
 
-import com.apartmentseller.apartmentseller.domain.User;
+import com.apartmentseller.apartmentseller.dto.UserDto;
 import com.apartmentseller.apartmentseller.services.TokenAuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,16 +36,16 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         if (Objects.isNull(request)) {
             return null;
         }
-        User user = getUserFromRequest(request);
+        UserDto user = getUserFromRequest(request);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), Collections.emptyList());
 
         return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     }
 
-    private User getUserFromRequest(HttpServletRequest request) {
-        User user = null;
+    private UserDto getUserFromRequest(HttpServletRequest request) {
+        UserDto user = null;
         try {
-            user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+            user = new ObjectMapper().readValue(request.getInputStream(), UserDto.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
