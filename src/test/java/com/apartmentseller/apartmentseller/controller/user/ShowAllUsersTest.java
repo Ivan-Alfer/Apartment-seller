@@ -4,9 +4,6 @@ import com.apartmentseller.apartmentseller.PostgresInitializer;
 import com.apartmentseller.apartmentseller.domain.Role;
 import com.apartmentseller.apartmentseller.domain.User;
 import com.apartmentseller.apartmentseller.repository.UserRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.NonNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,10 +74,4 @@ public class ShowAllUsersTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    private String generateToken(@NonNull Long id) {
-        return Jwts.builder()
-                .setId(id.toString())
-                .signWith(SignatureAlgorithm.HS512, "jwtKey123456789")
-                .compact();
-    }
 }

@@ -2,12 +2,10 @@ package com.apartmentseller.apartmentseller.services.impl;
 
 import com.apartmentseller.apartmentseller.services.TokenAuthService;
 import com.apartmentseller.apartmentseller.services.TokenHandler;
-import com.apartmentseller.apartmentseller.services.UserService;
 import com.apartmentseller.apartmentseller.services.security.SecurityUserService;
 import com.apartmentseller.apartmentseller.services.security.UserAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
