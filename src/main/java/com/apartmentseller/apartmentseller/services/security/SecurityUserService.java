@@ -21,7 +21,7 @@ public class SecurityUserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserAuthentication loadUserByUsername(String username) throws UsernameNotFoundException {
         User userEntity = userRepository.findByUsername(username);
         UserDto userDto = MapperService.INSTANCE.userEntityMapToUserDto(userEntity);
         return new UserAuthentication(userDto);

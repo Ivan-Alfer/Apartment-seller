@@ -29,20 +29,20 @@ public class TokenHandlerImpl implements TokenHandler {
         this.expirationTime = tokenHandlerProperty.getExpirationTimeInMS();
     }
 
-    public Optional<Long> extractUserId(@NonNull String token) {
+    public Optional<String> extractUser(@NonNull String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             return Optional.ofNullable(body.getId())
-                    .map(Long::new);
+                    .map(String::new);
         } catch (RuntimeException e) {
             return Optional.empty();
         }
     }
 
-    public String generateToken(@NonNull Long id) {
+    public String generateToken(@NonNull String username) {
         return Jwts.builder()
-                .setId(id.toString())
+                .setId(username)
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();

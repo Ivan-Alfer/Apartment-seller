@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -48,22 +50,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/announcement/*").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/announcement/*").authenticated()
                 .antMatchers("/", "/announcement/**", "/js/**", "/login", "/sign-up", "/activate/*").permitAll()
+//                .antMatchers("/user").hasRole("ADMIN")
                     .anyRequest().authenticated()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .anonymous()
+                    .disable()
+                    .exceptionHandling()
+                    .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .logout()
                     .logoutSuccessUrl("/").permitAll()
                 .and()
                     .csrf().disable()
-                .addFilterBefore(new JwtLoginFilter(authenticationManager(), tokenAuthService, authHeaderName), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new StatelessAuthFilter(tokenAuthService, authHeaderName), UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(new JwtLoginFilter(authenticationManager(), tokenAuthService, authHeaderName),
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new StatelessAuthFilter(tokenAuthService, authHeaderName),
+                        UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

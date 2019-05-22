@@ -1,6 +1,7 @@
 package com.apartmentseller.apartmentseller.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "usr")
 public class User {
 
@@ -50,4 +52,8 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd HH:mm:ss")
     private LocalDateTime lastVisit;
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }
