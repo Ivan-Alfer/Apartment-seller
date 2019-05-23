@@ -9,6 +9,7 @@ ext {
 	jjwtVersion= "0.9.1"
 	gsonVersion= "2.8.5"
 	testcontainerVersion= "1.11.2"
+	springSecurityTestVersion= "5.1.5.RELEASE"
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -30,6 +31,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
 	compile ('org.springframework.boot:spring-boot-starter-mail')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
+	testCompile ("org.springframework.security:spring-security-test:${springSecurityTestVersion}")
+
 
 	compile('org.postgresql:postgresql')
 

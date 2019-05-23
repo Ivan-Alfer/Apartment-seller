@@ -79,9 +79,9 @@ public class UserServiceImpl implements UserService {
         if (ServiceUtils.hasUserPermissionToUpdate(userId, currentUser)) {
             return userRepository.findById(userId)
                     .map(userEntity -> {
-                        BeanUtils.copyProperties(userDto, userEntity, "id", "active", "lastVisit", "password");
+                        BeanUtils.copyProperties(userDto, userEntity, "id", "active", "lastVisit", "password", "enable", "roles");
                         userRepository.save(userEntity);
-                        return userDto;
+                        return MapperService.INSTANCE.userEntityMapToUserDto(userEntity);
                     })
                     .orElseThrow(() -> new UserNotFoundException("User not found"));
         }

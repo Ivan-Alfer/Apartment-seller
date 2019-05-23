@@ -23,30 +23,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(initializers = PostgresInitializer.class)
 @Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/delete-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class ShowAllUsersTest {
+public class GetUserTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void showForAdmin() throws Exception {
-        mockMvc.perform(get("/user").header("X-Auth-Token", "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJxIiwiZXhwIjoxNTU5Mzg5NTQ3fQ.icydP3jYahr6dEJJPMkPPiY2hfLWHZLB19AZQDC7ltgypHq90WwhghvfihTN9F5kb3nAmcsB5eP1Cj66ZHScjQ"))
+    public void getUser() throws Exception {
+        mockMvc.perform(get("/user/2").header("X-Auth-Token", "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJxIiwiZXhwIjoxNTU5Mzg5NTQ3fQ.icydP3jYahr6dEJJPMkPPiY2hfLWHZLB19AZQDC7ltgypHq90WwhghvfihTN9F5kb3nAmcsB5eP1Cj66ZHScjQ"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void forbiddenForOtherUsers() throws Exception {
-        mockMvc.perform(get("/user").header("X-Auth-Token", "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhIiwiZXhwIjoxNTU5Mzg5NDgxfQ.uGAgxH2AumSyak5Ir0nRChRt8HRQGaNvAuFhFeSs5x7HmtwB7qy60yfT5c7J9DBrd0lXXrVMOq-tyjbw3qYPXQ"))
+    public void notExist() throws Exception {
+        mockMvc.perform(get("/user/7").header("X-Auth-Token", "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJxIiwiZXhwIjoxNTU5Mzg5NTQ3fQ.icydP3jYahr6dEJJPMkPPiY2hfLWHZLB19AZQDC7ltgypHq90WwhghvfihTN9F5kb3nAmcsB5eP1Cj66ZHScjQ"))
                 .andDo(print())
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    public void authenticationForAnonUsers() throws Exception {
-        mockMvc.perform(get("/user"))
-                .andDo(print())
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isNotFound());
     }
 
 }
