@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,10 +43,9 @@ public class AnnouncementController {
     }
 
     @PostMapping
-    public AnnouncementDto addAnnouncement(@RequestPart("announcement") AnnouncementDto announcement,
+    public AnnouncementDto addAnnouncement(@RequestPart AnnouncementDto announcement,
                                            @AuthenticationPrincipal UserDto userDto,
-                                           @RequestPart("file") MultipartFile file) {
-
+                                           @RequestParam(required = false, value = "file") MultipartFile file) {
         announcement.setAuthor(userDto);
         return announcementService.addAnnouncement(announcement, file);
     }
@@ -54,11 +54,11 @@ public class AnnouncementController {
     public AnnouncementDto updateAnnouncement(@PathVariable("id") long announcementId,
                                               @RequestBody AnnouncementDto announcement,
                                               @AuthenticationPrincipal UserDto userDto) {
-            return announcementService.updateAnnouncement(announcementId, announcement, userDto);
+        return announcementService.updateAnnouncement(announcementId, announcement, userDto);
     }
 
     @DeleteMapping("{id}")
-    public void deleteAnnouncement(@PathVariable("id") long announcementId, @AuthenticationPrincipal UserDto currentUser){
+    public void deleteAnnouncement(@PathVariable("id") long announcementId, @AuthenticationPrincipal UserDto currentUser) {
         announcementService.deleteAnnouncement(announcementId, currentUser);
     }
 
