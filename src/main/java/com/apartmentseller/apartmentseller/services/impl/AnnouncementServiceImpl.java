@@ -79,7 +79,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                     }
                     BeanUtils.copyProperties(announcement, announcementEntity, "id", "author", "creationTime");
                     announcementRepository.save(announcementEntity);
-                    return announcement;
+                    return MapperService.INSTANCE.announcementEntityMapToAnnouncementDto(announcementEntity);
                 }).orElseThrow(AnnouncementNotFoundException::new);
     }
 
@@ -87,7 +87,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         announcementRepository.findById(announcementId)
                 .map(announcementEntity -> {
                     if(!ServiceUtils.hasUserPermissionToUpdate(announcementEntity.getAuthor().getId(), currentUser)){
-                        return Optional.empty();
+                        throw new UserDoesNotHavePermission("");
                     }
                     announcementRepository.delete(announcementEntity);
                     return Optional.empty();
