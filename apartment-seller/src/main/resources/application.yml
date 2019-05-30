@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost/apartmentseller
+    username: postgres
+    password: root
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+  mail:
+    host: smtp.gmail.com
+    username: ivan.alfer@innowise-group.com
+    password:
+    port: 587
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+          ssl.trust: smtp.gmail.com
+mail:
+  debug: true
+decoded:
+  name: AES
+jwt:
+  key: jwtKey123456789
+  expirationTimeInMS: 864_000_000
+auth:
+  header:
+    name: X-Auth-Token
+url:
+  activate: http://localhost:8080/activate/
+upload:
+    path: /d:/development/apartment-seller/src/main/resources/uploads
