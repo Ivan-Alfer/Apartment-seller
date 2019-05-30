@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -104,5 +106,14 @@ public class UserServiceImpl implements UserService {
                     return MapperService.INSTANCE.userEntityMapToUserDto(user);
                     })
                 .orElseThrow(() -> new InvalidParameterException("Activation code not found"));
+    }
+
+    @Override
+    public Map<Long, String> getAllAuthors(List<Long> userIds) {
+        List<User> allAuthorsById = userRepository.findAllById(userIds);
+        return allAuthorsById.stream()
+                .collect(Collectors
+                        .toMap(User::getId, User::getUsername)
+                );
     }
 }

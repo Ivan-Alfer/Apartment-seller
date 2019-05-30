@@ -28,6 +28,5 @@ public class MailSenderImpl implements MailSender {
         simpleMailMessage.setText(message);
 
         javaMailSender.send(simpleMailMessage);
-
     }
 }
