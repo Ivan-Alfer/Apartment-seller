@@ -21,8 +21,6 @@ spring:
           auth: true
           starttls.enable: true
           ssl.trust: smtp.gmail.com
-  application:
-    name: apartment-seller
 mail:
   debug: true
 decoded:
@@ -37,20 +35,3 @@ url:
   activate: http://localhost:8080/activate/
 upload:
     path: /d:/development/apartment-seller/src/main/resources/uploads
-server:
-  port:8080
-eureka:
-  client:
-    service-url:
-      default-zone: http://localhost:8761/eureka
-zuul:
-  routes:
-    apartment-seller:
-      path: /apartment-seller/**
-      service-id: apartment-seller
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 10000
-        readTimeout: 10000
